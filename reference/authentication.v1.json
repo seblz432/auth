@@ -1,0 +1,74 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "authentication",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/signup": {
+      "post": {
+        "summary": "Your POST endpoint",
+        "operationId": "post-signup",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1,
+                      "example": "user already exists"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                },
+                "examples": {}
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "username",
+            "description": "username for new account",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "password",
+              "minLength": 8
+            },
+            "in": "query",
+            "name": "pasword",
+            "required": true,
+            "description": "hashed password for new account"
+          }
+        ],
+        "description": "Create a new user account"
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {}
+  }
+}
