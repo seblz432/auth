@@ -17,7 +17,7 @@ Install MongoDB:
 
 Run the following commands:
 
-    npm run dev
+    node app.js
     sudo systemctl start mongod
 
 
