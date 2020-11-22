@@ -19,6 +19,12 @@ Run the following commands:
     sudo systemctl start mongod
     node app.js
 
+### Alternatively with hot reloading:
+
+Install nodemon with `npm install -g nodemon` and run the following:
+   
+    sudo systemctl start mongod
+    nodemon app.js
 
 ## Stop MongoDB
 
