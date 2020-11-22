@@ -1,4 +1,3 @@
-
 # Authentication Service
 
 
@@ -17,8 +16,8 @@ Install MongoDB:
 
 Run the following commands:
 
-    node app.js
     sudo systemctl start mongod
+    node app.js
 
 
 ## Stop MongoDB
