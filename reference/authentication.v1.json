@@ -6,7 +6,8 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://localhost:3000",
+      "description": "Local Dev"
     }
   ],
   "paths": {
@@ -93,19 +94,19 @@
                   "description": "",
                   "type": "object",
                   "properties": {
-                    "JWT": {
+                    "token": {
                       "type": "string",
                       "minLength": 1
                     }
                   },
                   "required": [
-                    "JWT"
+                    "token"
                   ]
                 },
                 "examples": {
                   "example-1": {
                     "value": {
-                      "JWT": "fsjhesf9823.h98h98haf23.8329471249yh"
+                      "token": "fsjhesf932dff2823.h98hfsah8uafw8329898haf23"
                     }
                   }
                 }
@@ -128,6 +129,12 @@
                   "type": "string"
                 },
                 "description": "refreshToken"
+              },
+              "Cookie1": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "jwtSignature"
               }
             }
           }
@@ -164,7 +171,84 @@
               }
             }
           }
-        }
+        },
+        "parameters": []
+      }
+    },
+    "/refresh": {
+      "post": {
+        "summary": "",
+        "operationId": "post-refresh",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Cookie": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "jwtSignature"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "token"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "token": "fsjhesf932dff2823.h98hfsah8uafw8329898haf23"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "message": "invalid refresh token"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "refreshToken": []
+          }
+        ]
       }
     }
   },
