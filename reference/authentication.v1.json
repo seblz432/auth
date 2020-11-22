@@ -39,36 +39,144 @@
                 "examples": {}
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         },
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "name": "username",
-            "description": "username for new account",
-            "required": true
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "password",
-              "minLength": 8
-            },
-            "in": "query",
-            "name": "pasword",
-            "required": true,
-            "description": "hashed password for new account"
+        "parameters": [],
+        "description": "Create a new user account",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "username": "johndoe123",
+                    "password": "$2y$12$KM8F4ZhUVLkbuksQqHodqeA1bZogWv5P2ChyAmJA9qWwQsmAPo08K"
+                  }
+                }
+              }
+            }
           }
-        ],
-        "description": "Create a new user account"
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "",
+        "operationId": "post-login",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "JWT": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "JWT"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "JWT": "fsjhesf9823.h98h98haf23.8329471249yh"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {}
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Cookie": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "refreshToken"
+              }
+            }
+          }
+        },
+        "description": "Authenticate the client for user specific actions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "username": "johndoe123",
+                    "password": "$2y$12$KM8F4ZhUVLkbuksQqHodqeA1bZogWv5P2ChyAmJA9qWwQsmAPo08K"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
   "components": {
     "schemas": {},
-    "securitySchemes": {}
+    "securitySchemes": {
+      "refreshToken": {
+        "name": "Token",
+        "type": "apiKey",
+        "in": "cookie",
+        "description": "Token used to get a new JWT"
+      }
+    }
   }
 }
