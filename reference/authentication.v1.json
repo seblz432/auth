@@ -138,6 +138,46 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -151,24 +191,27 @@
                 "type": "object",
                 "properties": {
                   "username": {
-                    "type": "string",
-                    "minLength": 1
+                    "type": "string"
                   },
                   "password": {
-                    "type": "string",
-                    "minLength": 1
+                    "type": "string"
+                  },
+                  "deviceID": {
+                    "type": "string"
                   }
                 },
                 "required": [
                   "username",
-                  "password"
+                  "password",
+                  "deviceID"
                 ]
               },
               "examples": {
                 "example-1": {
                   "value": {
                     "username": "johndoe123",
-                    "password": "$2y$12$KM8F4ZhUVLkbuksQqHodqeA1bZogWv5P2ChyAmJA9qWwQsmAPo08K"
+                    "password": "$2y$12$KM8F4ZhUVLkbuksQqHodqeA1bZogWv5P2ChyAmJA9qWwQsmAPo08K",
+                    "deviceID": "06aa2fba-2e1d-4b46-bfc3-d13c1ca9d01b"
                   }
                 }
               }
