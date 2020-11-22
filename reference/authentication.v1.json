@@ -13,7 +13,7 @@
   "paths": {
     "/signup": {
       "post": {
-        "summary": "Your POST endpoint",
+        "summary": "Sign up",
         "operationId": "post-signup",
         "responses": {
           "201": {
@@ -83,7 +83,7 @@
     },
     "/login": {
       "post": {
-        "summary": "",
+        "summary": "Log in",
         "operationId": "post-login",
         "responses": {
           "200": {
@@ -137,6 +137,9 @@
                 "description": "jwtSignature"
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         },
         "description": "Authenticate the client for user specific actions",
@@ -177,7 +180,7 @@
     },
     "/refresh": {
       "post": {
-        "summary": "",
+        "summary": "Refresh access token",
         "operationId": "post-refresh",
         "responses": {
           "200": {
@@ -242,13 +245,65 @@
               }
             },
             "headers": {}
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         },
         "security": [
           {
             "refreshToken": []
           }
-        ]
+        ],
+        "description": "Use refresh token to get a new access token"
+      }
+    },
+    "/logout": {
+      "post": {
+        "summary": "Log out",
+        "operationId": "post-logout",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "message": "invalid refresh token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "refreshToken": []
+          }
+        ],
+        "description": "Deauthenticate refresh token server side"
       }
     }
   },
