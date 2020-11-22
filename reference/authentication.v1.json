@@ -172,6 +172,48 @@
                   }
                 }
               }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "text/html": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "application/EDI-X12": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "application/EDIFACT": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "application/atom+xml": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
             }
           }
         },
