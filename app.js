@@ -1,4 +1,6 @@
 const { validate: uuidValidate, v4: uuidv4 } = require('uuid');
+const { generateKeyPair } = require('crypto');
+const { default: SignJWT } = require('jose/jwt/sign')
 
 const express = require('express')
 const app = express()
@@ -22,18 +24,50 @@ const UserModel = new mongoose.model("user", {
   }]
 });
 
+var publicKey;
+var privateKey;
+
+generateKeyPair('ec', {
+  namedCurve: 'P-256',
+  publicKeyEncoding: {
+    type: 'spki',
+    format: 'pem'
+  },
+}, (err, pubKey, privKey) => {
+  publicKey = pubKey;
+  privateKey = privKey;
+});
+
+async function generateAccessToken (username) {
+  try {
+    const jwt = await new SignJWT({
+      'sub': username
+    })
+    .setProtectedHeader({ alg: 'ES256' })
+    .setIssuedAt()
+    .setIssuer('sepia.co:auth')
+    .setAudience('sepia.co:media')
+    .setExpirationTime('15m')
+    .sign(privateKey)
+
+    return jwt;
+  } catch (e) {
+    throw e;
+  }
+}
+
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`)
 })
 
 app.use(express.json())
 
-function generateJWT () {
-  
-}
-
 app.get('/', (req, res) => {
   res.send('Hello World!')
+})
+
+app.get('/getPublicKey', (req, res) => {
+  res.send(publicKey)
 })
 
 app.post('/signup', function (req, res) {
@@ -64,7 +98,7 @@ app.post('/login', function (req, res) {
     deviceID: req.body.deviceID
   }
 
-  if (!uuidValidate(reqParsed.deviceID)) res.status(400).send({ message: "invalid uuid" })
+  if (!uuidValidate(reqParsed.deviceID)) res.status(400).send({ message: "invalid device id" })
 
   UserModel.findOne({ username: reqParsed.username }, function (err, user) {
     if (err) res.status(500).end();
@@ -95,7 +129,16 @@ app.post('/login', function (req, res) {
       //save updates to database
       tempUser.save(function (err, updatedUser) {
         if (err) res.status(500).send(err);
-        res.status(200).json({ token: user.refreshTokens[matchIndex].token });
+
+        generateAccessToken(reqParsed.username).then( accessToken => {
+          res.status(200).json({
+            refreshToken: user.refreshTokens[matchIndex].token,
+            accessToken: accessToken
+          })
+        }).catch(err => {
+          res.status(500).send(err);
+        })
+
       });
     } else {
       res.status(401).send({ message: "wrong password" })
