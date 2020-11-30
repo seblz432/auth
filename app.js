@@ -113,28 +113,32 @@ app.post('/login', function (req, res) {
       const tokens = user.refreshTokens.map(el => el.deviceID);
       const matchIndex = tokens.indexOf(reqParsed.deviceID);
 
+      const newRefreshToken = uuidv4();
+
       //make sure device doesn't already have a refresh token
       if (matchIndex === -1) {
         tempUser.refreshTokens.push({
           deviceID: reqParsed.deviceID,
-          token: uuidv4()
+          token: newRefreshToken
         })
       } else {
         //update existing refresh token if one exists
         tempUser.refreshTokens[matchIndex] = {
           deviceID: reqParsed.deviceID,
-          token: uuidv4()
+          token: newRefreshToken
         }
       }
+
       //save updates to database
       tempUser.save(function (err, updatedUser) {
         if (err) res.status(500).send(err);
 
         generateAccessToken(reqParsed.username).then( accessToken => {
           res.status(200).json({
-            refreshToken: user.refreshTokens[matchIndex].token,
+            refreshToken: newRefreshToken,
             accessToken: accessToken
           })
+          console.log(accessToken)
         }).catch(err => {
           res.status(500).send(err);
         })
