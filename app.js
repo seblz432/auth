@@ -2,6 +2,7 @@ const { validate: uuidValidate, v4: uuidv4 } = require('uuid');
 const { generateKeyPair } = require('crypto');
 const { default: SignJWT } = require('jose/jwt/sign')
 
+var cookieParser = require('cookie-parser')
 const express = require('express')
 const app = express()
 const port = 3000
@@ -56,11 +57,12 @@ async function generateAccessToken (username) {
   }
 }
 
+app.use(express.json())
+app.use(cookieParser())
+
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`)
 })
-
-app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -134,13 +136,16 @@ app.post('/login', function (req, res) {
         if (err) res.status(500).send(err);
 
         generateAccessToken(reqParsed.username).then( accessToken => {
-          res.status(200).json({
+          /*res.status(200).json({
             refreshToken: newRefreshToken,
             accessToken: accessToken
-          })
-          console.log(accessToken)
+          })*/
+          res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true, SameSite: "strict" });
+          res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, SameSite: "strict" });
+          res.status(200).end();
         }).catch(err => {
           res.status(500).send(err);
+          console.log(err)
         })
 
       });
