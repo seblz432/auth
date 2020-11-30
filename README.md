@@ -12,6 +12,10 @@ Install MongoDB:
 
 [MongoDB installation instructions for Linux](https://docs.mongodb.com/manual/administration/install-on-linux/)
 
+Or if you're running WSL2:
+
+[MongoDB installation instructions for WSL](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-database)
+
 ## Run the service
 
 Run the following commands:
@@ -25,6 +29,11 @@ Install nodemon with `npm install -g nodemon` and run the following:
    
     sudo systemctl start mongod
     nodemon app.js
+
+
+### Running mongodb on WSL:
+   
+    sudo service mongodb start
 
 ## Stop MongoDB
 
