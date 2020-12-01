@@ -136,8 +136,8 @@ app.post('/login', function (req, res) {
         if (err) res.status(500).send(err);
 
         generateAccessToken(reqParsed.username).then( accessToken => {
-          res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: false, sameSite: "strict" });
-          res.cookie('accessToken', accessToken, { httpOnly: true, secure: false, sameSite: "strict" });
+          res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true, sameSite: "strict" });
+          res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: "strict" });
           res.status(200).end();
         }).catch(err => {
           res.status(500).send(err);
