@@ -136,18 +136,12 @@ app.post('/login', function (req, res) {
         if (err) res.status(500).send(err);
 
         generateAccessToken(reqParsed.username).then( accessToken => {
-          /*res.status(200).json({
-            refreshToken: newRefreshToken,
-            accessToken: accessToken
-          })*/
-          res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true, SameSite: "strict" });
-          res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, SameSite: "strict" });
+          res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: false, sameSite: "strict" });
+          res.cookie('accessToken', accessToken, { httpOnly: true, secure: false, sameSite: "strict" });
           res.status(200).end();
         }).catch(err => {
           res.status(500).send(err);
-          console.log(err)
         })
-
       });
     } else {
       res.status(401).send({ message: "wrong password" })
@@ -155,8 +149,92 @@ app.post('/login', function (req, res) {
   });
 })
 
+app.post('/refresh', function (req, res) {
+  const reqParsed = {
+    username: req.body.username,
+    deviceID: req.body.deviceID,
+    refreshToken: req.cookies.refreshToken
+  }
+
+  if (reqParsed.refreshToken) {
+    UserModel.findOne({ username: reqParsed.username }, function (err, user) {
+      if (err) res.status(500).end();
+
+      //check username
+      if (user === null) {
+        res.status(401).send({ message: "user doesn't exist" })
+      } else {
+        const tokens = user.refreshTokens.map(el => el.deviceID);
+        const matchIndex = tokens.indexOf(reqParsed.deviceID);
+
+        if (matchIndex === -1) {
+          res.status(401).send({ message: "device not logged in" })
+        } else {
+          if (reqParsed.refreshToken === user.refreshTokens[matchIndex].token){
+            generateAccessToken(reqParsed.username).then( accessToken => {
+              res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: "strict" });
+              res.status(200).end();
+            }).catch(err => {
+              res.status(500).send(err);
+            })
+          } else {
+            res.status(401).send({ message: "invalid refresh token" })
+          }
+        }
+      }
+    })
+  } else {
+    res.status(401).send({ message: "missing refresh token" })
+    console.log(req.cookies)
+  }
+})
+
+app.post('/logout', function (req, res) {
+  const reqParsed = {
+    username: req.body.username,
+    deviceID: req.body.deviceID,
+    refreshToken: req.cookies.refreshToken
+  }
+
+  if (reqParsed.refreshToken) {
+    UserModel.findOne({ username: reqParsed.username }, function (err, user) {
+      if (err) res.status(500).end();
+
+      //check username
+      if (user === null) {
+        res.status(401).send({ message: "user doesn't exist" })
+      } else {
+        const tokens = user.refreshTokens.map(el => el.deviceID);
+        const matchIndex = tokens.indexOf(reqParsed.deviceID);
+
+        if (matchIndex === -1) {
+          res.status(401).send({ message: "device not logged in" })
+        } else {
+          if (reqParsed.refreshToken === user.refreshTokens[matchIndex].token){
+            const tempUser = user;
+            tempUser.refreshTokens.splice(matchIndex, 1)
+
+            tempUser.save(function (err, updatedUser) {
+                if (err) res.status(500).send(err);
+
+                res.clearCookie('refreshToken');
+                res.clearCookie('accessToken');
+                res.status(200).end()
+            })
+          } else {
+            res.status(401).send({ message: "invalid refresh token" })
+          }
+        }
+      }
+    })
+  } else {
+    res.status(401).send({ message: "missing refresh token" })
+    console.log(req.cookies)
+  }
+})
+
 // Insecure test endpoints
-app.post('/deleteUser', function (req, res) {
+/*app.post('/deleteUser', function (req, res) {
   UserModel.deleteOne({ username: req.body.username }, function (err) {
     if (err) res.status(500).end();
   });
@@ -169,4 +247,4 @@ app.get('/getUsers', (req, res) => {
     if (err) return console.error(err);
     res.json(users);
   })
-})
+})*/
