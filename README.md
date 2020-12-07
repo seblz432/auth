@@ -1,5 +1,6 @@
 # Authentication Service
 
+This is the authentication service for the Sepia backend which follows a microservice architecture. This service handles any account related requests. Using the login endpoint the client gets back a refresh token (randomly generated UUID) and an access token (signed JWT). The access token can be used to authorize the client for any other request to other services, and the regresh token can be used with this service to grab a new access token.
 
 ## Local Setup
 
