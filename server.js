@@ -14,7 +14,7 @@ mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true, useCre
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log('Connected to db')
+  console.log(`Connected to db at ${dbUrl}`)
 });
 
 const UserModel = new mongoose.model("user", {
