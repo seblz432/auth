@@ -5,15 +5,16 @@ const { default: SignJWT } = require('jose/jwt/sign')
 var cookieParser = require('cookie-parser')
 const express = require('express')
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000;
+const dbUrl = process.env.DBURL || 'mongodb://localhost/authentication-service';
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/users', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true,});
+mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true,});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log('Connected to mongodb://localhost/users')
+  console.log('Connected to db')
 });
 
 const UserModel = new mongoose.model("user", {
@@ -61,7 +62,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`)
+  console.log(`App listening at port ${port}`)
 })
 
 app.get('/', (req, res) => {
